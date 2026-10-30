@@ -1,0 +1,1200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roster & Payroll — HR Portal</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#16213E;
+  --navy-light:#212F52;
+  --navy-hair:#2C3A63;
+  --teal:#0F9D8C;
+  --teal-soft:#E4F5F2;
+  --coral:#E8604C;
+  --coral-soft:#FCE9E6;
+  --amber:#EFA93A;
+  --amber-soft:#FDF3E1;
+  --bg:#F4F6FA;
+  --card:#FFFFFF;
+  --text:#20263A;
+  --muted:#6C7488;
+  --border:#E6E9F1;
+  --radius:14px;
+  --shadow:0 1px 2px rgba(22,33,62,.05), 0 8px 24px -12px rgba(22,33,62,.12);
+}
+*{box-sizing:border-box;}
+html,body{margin:0;padding:0;}
+body{
+  font-family:'Inter',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3,h4{font-family:'Space Grotesk',sans-serif;margin:0;letter-spacing:-0.01em;}
+.mono{font-family:'JetBrains Mono',monospace;}
+button{font-family:inherit;cursor:pointer;}
+a{color:inherit;text-decoration:none;}
+::selection{background:var(--teal-soft);}
+
+/* ---------- Login ---------- */
+#login-screen{
+  min-height:100vh;
+  display:flex;
+  align-items:stretch;
+  background:var(--navy);
+}
+.login-visual{
+  flex:1.1;
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  padding:48px;
+  color:#fff;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(15,157,140,.35), transparent 45%),
+    radial-gradient(circle at 85% 80%, rgba(232,96,76,.25), transparent 45%),
+    linear-gradient(160deg, #16213E 0%, #101830 100%);
+}
+.login-visual .brand{display:flex;align-items:center;gap:10px;font-family:'Space Grotesk';font-weight:700;font-size:20px;}
+.login-visual .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--teal);box-shadow:0 0 0 4px rgba(15,157,140,.25);}
+.login-visual .pitch h1{font-size:40px;line-height:1.12;max-width:480px;}
+.login-visual .pitch p{color:#B9C0D6;max-width:420px;margin-top:14px;font-size:15px;line-height:1.6;}
+.ring-demo{display:flex;gap:26px;margin-top:36px;}
+.ring-mini{display:flex;flex-direction:column;align-items:center;gap:8px;}
+.ring-mini span{font-size:12px;color:#9AA3C0;}
+.login-visual .foot{font-size:12px;color:#7C86A8;}
+.login-panel{
+  flex:1;
+  background:var(--bg);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:32px;
+}
+.login-card{
+  width:100%;
+  max-width:380px;
+  background:var(--card);
+  border-radius:var(--radius);
+  box-shadow:var(--shadow);
+  padding:34px 32px 28px;
+  border:1px solid var(--border);
+}
+.login-card h2{font-size:22px;margin-bottom:4px;}
+.login-card .sub{color:var(--muted);font-size:13.5px;margin-bottom:24px;}
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:6px;text-transform:uppercase;letter-spacing:.04em;}
+.field select, .field input{
+  width:100%;padding:11px 12px;border-radius:9px;border:1.5px solid var(--border);
+  background:#fff;font-size:14.5px;color:var(--text);font-family:inherit;
+}
+.field select:focus, .field input:focus{outline:none;border-color:var(--teal);}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;gap:8px;
+  padding:11px 18px;border-radius:9px;border:none;font-weight:600;font-size:14px;
+  transition:transform .12s ease, box-shadow .12s ease;
+}
+.btn-primary{background:var(--navy);color:#fff;width:100%;}
+.btn-primary:hover{box-shadow:0 6px 16px -6px rgba(22,33,62,.5);}
+.btn-teal{background:var(--teal);color:#fff;}
+.btn-ghost{background:transparent;color:var(--navy);border:1.5px solid var(--border);}
+.btn-ghost:hover{border-color:var(--navy);}
+.btn-coral{background:var(--coral);color:#fff;}
+.login-note{margin-top:18px;font-size:12px;color:var(--muted);background:var(--amber-soft);border:1px solid #F3DFB0;padding:10px 12px;border-radius:8px;line-height:1.5;}
+
+/* ---------- App shell ---------- */
+#app{display:none;min-height:100vh;}
+.shell{display:flex;min-height:100vh;}
+.sidebar{
+  width:230px;flex-shrink:0;background:var(--navy);color:#fff;
+  display:flex;flex-direction:column;padding:20px 14px;
+  position:sticky;top:0;height:100vh;
+}
+.sidebar .brand{display:flex;align-items:center;gap:9px;padding:6px 10px 22px;font-family:'Space Grotesk';font-weight:700;font-size:17px;}
+.sidebar .brand .dot{width:9px;height:9px;border-radius:50%;background:var(--teal);}
+.nav-item{
+  display:flex;align-items:center;gap:11px;padding:11px 12px;border-radius:9px;
+  color:#B9C0D6;font-size:14px;font-weight:500;margin-bottom:3px;cursor:pointer;
+  transition:background .12s ease, color .12s ease;
+}
+.nav-item svg{width:18px;height:18px;flex-shrink:0;}
+.nav-item:hover{background:rgba(255,255,255,.06);color:#fff;}
+.nav-item.active{background:var(--teal);color:#fff;}
+.sidebar .spacer{flex:1;}
+.sidebar .user-box{
+  display:flex;align-items:center;gap:10px;padding:12px;border-radius:10px;
+  background:rgba(255,255,255,.05);margin-top:8px;
+}
+.avatar{
+  width:34px;height:34px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;color:#fff;
+  font-family:'Space Grotesk';
+}
+.sidebar .user-box .who{flex:1;min-width:0;}
+.sidebar .user-box .who .n{font-size:13px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.sidebar .user-box .who .r{font-size:11.5px;color:#8D96B5;}
+.logout-btn{background:none;border:none;color:#8D96B5;padding:6px;border-radius:6px;}
+.logout-btn:hover{color:#fff;background:rgba(255,255,255,.08);}
+
+.main{flex:1;min-width:0;display:flex;flex-direction:column;}
+.topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:16px 28px;background:#fff;border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:20;
+}
+.topbar h1{font-size:19px;}
+.topbar .page-sub{font-size:12.5px;color:var(--muted);margin-top:2px;}
+.topbar-right{display:flex;align-items:center;gap:14px;}
+.bell-btn{position:relative;background:var(--bg);border:1px solid var(--border);width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;}
+.bell-btn svg{width:18px;height:18px;color:var(--navy);}
+.bell-dot{position:absolute;top:7px;right:8px;width:8px;height:8px;border-radius:50%;background:var(--coral);border:2px solid #fff;}
+.content{padding:26px 28px 60px;max-width:1360px;width:100%;margin:0 auto;}
+
+/* notification dropdown */
+.notif-panel{position:absolute;top:64px;right:28px;width:340px;background:#fff;border:1px solid var(--border);border-radius:12px;box-shadow:var(--shadow);z-index:50;display:none;max-height:420px;overflow:auto;}
+.notif-panel.open{display:block;}
+.notif-item{padding:13px 16px;border-bottom:1px solid var(--border);font-size:13px;}
+.notif-item:last-child{border-bottom:none;}
+.notif-item .t{font-weight:600;margin-bottom:2px;}
+.notif-item .d{color:var(--muted);font-size:12px;}
+.notif-item.pos .t{color:var(--teal);}
+.notif-item.neg .t{color:var(--coral);}
+
+/* ---------- shared components ---------- */
+.grid{display:grid;gap:18px;}
+.g-4{grid-template-columns:repeat(4,1fr);}
+.g-3{grid-template-columns:repeat(3,1fr);}
+.g-2{grid-template-columns:repeat(2,1fr);}
+@media(max-width:1100px){.g-4{grid-template-columns:repeat(2,1fr);}.g-3{grid-template-columns:repeat(2,1fr);}}
+@media(max-width:700px){.g-4,.g-3,.g-2{grid-template-columns:1fr;}}
+
+.card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow);}
+.card-pad{padding:20px 22px;}
+.card-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;}
+.card-head h3{font-size:15px;}
+.card-head .link{font-size:12.5px;color:var(--teal);font-weight:600;}
+
+.stat-card{padding:18px 20px;}
+.stat-card .top{display:flex;align-items:center;justify-content:space-between;}
+.stat-card .icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;}
+.stat-card .icon svg{width:18px;height:18px;}
+.stat-card .label{font-size:12.5px;color:var(--muted);margin-top:14px;}
+.stat-card .val{font-size:26px;font-family:'JetBrains Mono';font-weight:700;margin-top:2px;}
+.stat-card .delta{font-size:12px;margin-top:6px;font-weight:600;}
+.stat-card .delta.up{color:var(--teal);}
+.stat-card .delta.down{color:var(--coral);}
+
+.pill{display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:20px;font-size:11.5px;font-weight:600;}
+.pill.green{background:var(--teal-soft);color:var(--teal);}
+.pill.red{background:var(--coral-soft);color:var(--coral);}
+.pill.amber{background:var(--amber-soft);color:#B47A16;}
+.pill.gray{background:#EEF0F5;color:var(--muted);}
+
+table{width:100%;border-collapse:collapse;font-size:13.5px;}
+th{text-align:left;font-size:11.5px;text-transform:uppercase;letter-spacing:.04em;color:var(--muted);font-weight:600;padding:10px 12px;border-bottom:1px solid var(--border);}
+td{padding:12px 12px;border-bottom:1px solid var(--border);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tbody tr:hover{background:#FAFBFD;}
+.emp-cell{display:flex;align-items:center;gap:10px;}
+.emp-cell .name{font-weight:600;font-size:13.5px;}
+.emp-cell .role{font-size:11.5px;color:var(--muted);}
+
+/* ring chart */
+.ring-wrap{position:relative;display:inline-flex;align-items:center;justify-content:center;}
+.ring-wrap .center{position:absolute;text-align:center;}
+.ring-wrap .center .n{font-family:'JetBrains Mono';font-weight:700;font-size:20px;}
+.ring-wrap .center .l{font-size:10px;color:var(--muted);}
+
+/* roster calendar */
+.roster-grid{display:grid;grid-template-columns:170px repeat(7,1fr);border:1px solid var(--border);border-radius:12px;overflow:hidden;}
+.roster-grid .rhead, .roster-grid .rcell, .roster-grid .rname{padding:10px 8px;border-bottom:1px solid var(--border);border-right:1px solid var(--border);font-size:12.5px;}
+.roster-grid .rhead{background:#FAFBFD;font-weight:700;text-align:center;position:sticky;top:0;}
+.roster-grid .rhead .d{font-size:10.5px;color:var(--muted);font-weight:500;}
+.roster-grid .rname{display:flex;align-items:center;gap:8px;background:#FAFBFD;font-weight:600;}
+.roster-grid .rcell{min-height:58px;cursor:pointer;transition:background .1s;position:relative;}
+.roster-grid .rcell:hover{background:#F3F6FC;}
+.roster-grid > div:nth-child(8n){border-right:none;}
+.shift-chip{border-radius:7px;padding:5px 7px;font-size:11px;font-weight:600;line-height:1.3;}
+.shift-chip.morning{background:var(--teal-soft);color:var(--teal);}
+.shift-chip.evening{background:var(--amber-soft);color:#B47A16;}
+.shift-chip.night{background:#E7E9F7;color:#4A4FA0;}
+.shift-chip .t{font-weight:500;opacity:.8;font-size:10px;}
+.rcell.off{color:#C7CCDA;font-size:11px;display:flex;align-items:center;justify-content:center;}
+
+/* modal */
+.overlay{position:fixed;inset:0;background:rgba(16,24,48,.5);display:none;align-items:center;justify-content:center;z-index:100;padding:20px;}
+.overlay.open{display:flex;}
+.modal{background:#fff;border-radius:16px;width:100%;max-width:400px;padding:24px;box-shadow:var(--shadow);}
+.modal h3{font-size:16px;margin-bottom:4px;}
+.modal .sub{font-size:12.5px;color:var(--muted);margin-bottom:18px;}
+.modal-actions{display:flex;gap:10px;margin-top:20px;}
+.modal-actions button{flex:1;}
+
+/* attendance page */
+.checkin-card{display:flex;gap:24px;align-items:center;}
+.face-box{
+  width:160px;height:160px;border-radius:16px;background:var(--navy);
+  display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;flex-shrink:0;
+  border:2px dashed var(--navy-hair);
+}
+.face-box video, .face-box canvas{width:100%;height:100%;object-fit:cover;position:absolute;inset:0;}
+.face-box .placeholder{color:#7C86A8;font-size:12px;text-align:center;padding:10px;}
+.face-badge{position:absolute;bottom:8px;left:8px;right:8px;background:rgba(15,157,140,.92);color:#fff;font-size:11px;font-weight:600;text-align:center;padding:5px;border-radius:7px;display:none;}
+.face-badge.show{display:block;}
+.geo-row{display:flex;gap:10px;font-size:12.5px;color:var(--muted);margin-top:10px;flex-wrap:wrap;}
+.geo-row .g-pill{background:var(--bg);border:1px solid var(--border);padding:5px 10px;border-radius:8px;}
+
+.timeline{border-left:2px solid var(--border);margin-left:8px;padding-left:18px;}
+.tl-item{position:relative;padding-bottom:18px;}
+.tl-item::before{content:'';position:absolute;left:-23px;top:3px;width:9px;height:9px;border-radius:50%;background:var(--teal);}
+.tl-item.absent::before{background:var(--coral);}
+.tl-item .tt{font-size:13px;font-weight:600;}
+.tl-item .td2{font-size:12px;color:var(--muted);margin-top:2px;}
+
+.empty-state{text-align:center;padding:40px 20px;color:var(--muted);}
+.empty-state svg{width:34px;height:34px;margin-bottom:10px;opacity:.5;}
+
+.toast-wrap{position:fixed;bottom:20px;right:20px;z-index:200;display:flex;flex-direction:column;gap:10px;}
+.toast{background:var(--navy);color:#fff;padding:12px 16px;border-radius:10px;font-size:13px;box-shadow:var(--shadow);display:flex;align-items:center;gap:10px;min-width:220px;animation:slideIn .25s ease;}
+.toast.pos{background:var(--teal);}
+.toast.neg{background:var(--coral);}
+@keyframes slideIn{from{transform:translateY(10px);opacity:0;}to{transform:translateY(0);opacity:1;}}
+
+.section-title{font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin:26px 0 12px;}
+.legend{display:flex;gap:14px;font-size:12px;color:var(--muted);align-items:center;flex-wrap:wrap;}
+.legend .sw{width:10px;height:10px;border-radius:3px;display:inline-block;margin-right:5px;}
+
+@media(max-width:900px){
+  .sidebar{position:fixed;left:-240px;transition:left .2s;z-index:60;box-shadow:0 0 0 2000px rgba(0,0,0,0);}
+  .sidebar.open{left:0;}
+  .content{padding:18px 16px 50px;}
+  .topbar{padding:14px 16px;}
+  .roster-grid{grid-template-columns:120px repeat(7,90px);overflow-x:auto;}
+  .checkin-card{flex-direction:column;align-items:flex-start;}
+}
+.menu-btn{display:none;background:none;border:none;padding:6px;}
+.menu-btn svg{width:22px;height:22px;}
+@media(max-width:900px){.menu-btn{display:flex;}}
+</style>
+</head>
+<body>
+
+<!-- ================= LOGIN ================= -->
+<div id="login-screen">
+  <div class="login-visual">
+    <div class="brand"><span class="dot"></span> Meridian HR</div>
+    <div class="pitch">
+      <h1>Roster, attendance and payroll — running on one clock.</h1>
+      <p>Plan shifts, verify presence with GPS and face check-in, and let ₹50 attendance credits and deductions post themselves.</p>
+      <div class="ring-demo" id="login-rings"></div>
+    </div>
+    <div class="foot">Demo build — in-memory data, resets on refresh · Meridian HR © 2026</div>
+  </div>
+  <div class="login-panel">
+    <div class="login-card">
+      <h2>Sign in</h2>
+      <div class="sub">Pick a role to explore the portal as an admin or an employee.</div>
+      <div class="field">
+        <label>Role</label>
+        <select id="login-role">
+          <option value="admin">Admin / HR Manager</option>
+          <option value="employee">Employee</option>
+        </select>
+      </div>
+      <div class="field" id="employee-picker-field">
+        <label>Employee</label>
+        <select id="login-employee"></select>
+      </div>
+      <div class="field">
+        <label>Password</label>
+        <input type="password" placeholder="Any password works in this demo" value="••••••••">
+      </div>
+      <button class="btn btn-primary" onclick="doLogin()">Sign in →</button>
+      <div class="login-note">This is a front-end prototype. Login, GPS geofencing and face match are simulated client-side — a production build needs a real auth/backend, a face-recognition API and server-verified GPS.</div>
+    </div>
+  </div>
+</div>
+
+<!-- ================= APP ================= -->
+<div id="app">
+  <div class="shell">
+    <div class="sidebar" id="sidebar">
+      <div class="brand"><span class="dot"></span> Meridian HR</div>
+      <div class="nav-item active" data-page="dashboard" onclick="goPage('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+        Dashboard
+      </div>
+      <div class="nav-item" data-page="roster" onclick="goPage('roster')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>
+        Roster Planning
+      </div>
+      <div class="nav-item" data-page="attendance" onclick="goPage('attendance')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg>
+        Attendance
+      </div>
+      <div class="nav-item" data-page="payroll" onclick="goPage('payroll')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="3"/><path d="M6 6V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v1"/></svg>
+        Payroll
+      </div>
+      <div class="nav-item" data-page="employees" id="nav-employees" onclick="goPage('employees')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        Employees
+      </div>
+      <div class="spacer"></div>
+      <div class="user-box">
+        <div class="avatar" id="side-avatar"></div>
+        <div class="who">
+          <div class="n" id="side-name"></div>
+          <div class="r" id="side-role"></div>
+        </div>
+        <button class="logout-btn" title="Sign out" onclick="doLogout()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5M21 12H9"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="main">
+      <div class="topbar">
+        <div style="display:flex;align-items:center;gap:10px;">
+          <button class="menu-btn" onclick="document.getElementById('sidebar').classList.toggle('open')">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+          </button>
+          <div>
+            <h1 id="page-title">Dashboard</h1>
+            <div class="page-sub" id="page-sub">Welcome back</div>
+          </div>
+        </div>
+        <div class="topbar-right">
+          <button class="bell-btn" onclick="toggleNotif()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+            <span class="bell-dot" id="bell-dot"></span>
+          </button>
+        </div>
+      </div>
+      <div class="notif-panel" id="notif-panel"></div>
+      <div class="content" id="content"></div>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="overlay"></div>
+<div class="toast-wrap" id="toast-wrap"></div>
+
+<script>
+/* ============================================================
+   API CLIENT
+   All data now lives in Google Sheets, served by the Apps Script web app. No more
+   in-memory demo arrays — every render function below fetches
+   what it needs first.
+   ============================================================ */
+// Paste the Web app URL from Apps Script (Deploy > Manage deployments) between the quotes.
+const API = "https://script.google.com/macros/s/AKfycbz4w--aWTwTwbdeWiWgE8v4tlGM0NqjTlIpKMIyH_WvEumW9zchDiE6gD8UspQ4jRlf/exec";
+
+// Login token issued by the Apps Script backend (kept in memory only, cleared on refresh/logout).
+let AUTH_TOKEN = null;
+
+// Every call is a POST with a text/plain JSON body. Apps Script can't answer CORS
+// preflight requests, and text/plain is a "simple" content type that skips them.
+async function api(action, { method = "GET", params = null, body = null } = {}) {
+  if (!API || API.startsWith("PASTE_")) {
+    throw new Error("Set the API constant in index.html to your Apps Script web app URL.");
+  }
+  const res = await fetch(API, {
+    method: "POST",
+    redirect: "follow",
+    headers: { "Content-Type": "text/plain;charset=utf-8" },
+    body: JSON.stringify({ action, params: params || {}, body: body || {}, token: AUTH_TOKEN }),
+  });
+  let data;
+  try { data = await res.json(); } catch { throw new Error("Unexpected response from the server"); }
+  if (data && data.error) throw new Error(data.error);
+  return data;
+}
+
+const SHIFT_TYPES = {
+  morning: { label: "Morning", time: "09:00–17:00" },
+  evening: { label: "Evening", time: "14:00–22:00" },
+  night:   { label: "Night",   time: "22:00–06:00" },
+};
+
+function pad(n){ return n<10 ? "0"+n : ""+n; }
+function fmtDate(d){ return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate()); }
+function parseDate(s){ const [y,m,d] = s.split("-").map(Number); return new Date(y,m-1,d); }
+function addDays(d,n){ const r=new Date(d); r.setDate(r.getDate()+n); return r; }
+function dayLabel(d){ return d.toLocaleDateString('en-US',{weekday:'short'}); }
+function dateLabel(d){ return d.toLocaleDateString('en-US',{month:'short',day:'numeric'}); }
+function fmtMoney(n){ const s = n<0 ? "-₹"+Math.abs(n).toLocaleString('en-IN') : "₹"+n.toLocaleString('en-IN'); return s; }
+function initials(name){ return name.split(" ").map(p=>p[0]).slice(0,2).join(""); }
+function startOfWeek(d){ const wd = d.getDay(); const diff = (wd===0? -6 : 1-wd); return addDays(d,diff); }
+
+/* ============================================================
+   AUTH / NAV STATE
+   ============================================================ */
+let currentUser = null;
+let currentPage = "dashboard";
+let rosterWeekStart = fmtDate(startOfWeek(new Date()));
+
+async function populateLoginEmployee(){
+  try {
+    const { employees } = await api("auth.employeeOptions");
+    const sel = document.getElementById('login-employee');
+    sel.innerHTML = employees.map(e=>`<option value="${e.id}">${e.name} — ${e.role}</option>`).join("");
+  } catch (err) {
+    toast("Couldn't reach the server: " + err.message, "neg");
+  }
+}
+populateLoginEmployee();
+
+document.getElementById('login-role').addEventListener('change', (e)=>{
+  document.getElementById('employee-picker-field').style.display = e.target.value==='admin' ? 'none' : 'block';
+});
+
+async function doLogin(){
+  const role = document.getElementById('login-role').value;
+  const empId = document.getElementById('login-employee').value;
+  const btn = event.target;
+  btn.disabled = true; btn.textContent = "Signing in…";
+  try {
+    const { user, token } = await api("login", { method:"POST", body:{ role, empId } });
+    AUTH_TOKEN = token;
+    currentUser = user;
+    document.getElementById('login-screen').style.display='none';
+    document.getElementById('app').style.display='block';
+    document.getElementById('nav-employees').style.display = currentUser.isAdmin ? 'flex' : 'none';
+    document.getElementById('side-avatar').style.background = currentUser.color;
+    document.getElementById('side-avatar').textContent = initials(currentUser.name);
+    document.getElementById('side-name').textContent = currentUser.name;
+    document.getElementById('side-role').textContent = currentUser.isAdmin ? "Admin · HR Manager" : currentUser.role;
+    goPage('dashboard');
+  } catch (err) {
+    toast("Sign-in failed: " + err.message, "neg");
+  } finally {
+    btn.disabled = false; btn.textContent = "Sign in →";
+  }
+}
+async function doLogout(){
+  try { await api("logout", { method:"POST" }); } catch {}
+  AUTH_TOKEN = null;
+  currentUser = null;
+  document.getElementById('login-screen').style.display='flex';
+  document.getElementById('app').style.display='none';
+}
+
+function goPage(page){
+  currentPage = page;
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active', n.dataset.page===page));
+  document.getElementById('sidebar').classList.remove('open');
+  const titles = { dashboard:["Dashboard", currentUser.isAdmin? "Organization overview" : "Your overview"],
+                    roster:["Roster Planning","Assign and manage shifts"],
+                    attendance:["Attendance","GPS + face check-in / check-out"],
+                    payroll:["Payroll", currentUser.isAdmin? "Salaries, bonuses, deductions and attendance ledger":"Your salary breakdown"],
+                    employees:["Employees","Manage the team"] };
+  document.getElementById('page-title').textContent = titles[page][0];
+  document.getElementById('page-sub').textContent = titles[page][1];
+  render();
+}
+
+async function toggleNotif(){
+  const panel = document.getElementById('notif-panel');
+  const willOpen = !panel.classList.contains('open');
+  panel.classList.toggle('open');
+  if (!willOpen) return;
+  panel.innerHTML = `<div class="notif-item"><div class="d">Loading…</div></div>`;
+  try {
+    const { notifications } = await api("notifications.list");
+    panel.innerHTML = notifications.length ? notifications.map(n=>`
+      <div class="notif-item ${n.kind}">
+        <div class="t">${n.title}</div>
+        <div class="d">${n.body}</div>
+      </div>`).join("") : `<div class="notif-item"><div class="d">No notifications yet.</div></div>`;
+    document.getElementById('bell-dot').style.display = notifications.length ? 'block' : 'none';
+  } catch (err) {
+    panel.innerHTML = `<div class="notif-item"><div class="d">Couldn't load notifications.</div></div>`;
+  }
+}
+document.addEventListener('click', (e)=>{
+  const panel = document.getElementById('notif-panel');
+  if(!panel.contains(e.target) && !e.target.closest('.bell-btn')) panel.classList.remove('open');
+});
+
+function toast(msg, kind){
+  const wrap = document.getElementById('toast-wrap');
+  const el = document.createElement('div');
+  el.className = 'toast ' + (kind||'');
+  el.textContent = msg;
+  wrap.appendChild(el);
+  setTimeout(()=>{ el.remove(); }, 3400);
+}
+function loadingHTML(){ return `<div class="empty-state">Loading…</div>`; }
+function errorHTML(msg){ return `<div class="empty-state">Couldn't load this page.<br><span style="font-size:12px;">${msg}</span></div>`; }
+
+async function render(){
+  const c = document.getElementById('content');
+  c.innerHTML = loadingHTML();
+  try {
+    if(currentPage==='dashboard') c.innerHTML = await renderDashboard();
+    else if(currentPage==='roster') c.innerHTML = await renderRoster();
+    else if(currentPage==='attendance') c.innerHTML = await renderAttendance();
+    else if(currentPage==='payroll') c.innerHTML = await renderPayroll();
+    else if(currentPage==='employees') c.innerHTML = await renderEmployees();
+    afterRender();
+  } catch (err) {
+    c.innerHTML = errorHTML(err.message);
+  }
+}
+function afterRender(){ /* hook for future per-page JS */ }
+
+/* ============================================================
+   RING CHART (SVG)
+   ============================================================ */
+function ringSVG(present, absent, size, stroke, colorPresent, colorAbsent){
+  size = size||90; stroke = stroke||10;
+  const total = present+absent || 1;
+  const r = (size-stroke)/2;
+  const c = size/2;
+  const circ = 2*Math.PI*r;
+  const presentLen = circ * (present/total);
+  return `
+  <svg width="${size}" height="${size}" viewBox="0 0 ${size} ${size}">
+    <circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="${colorAbsent||'#F1E4E1'}" stroke-width="${stroke}"/>
+    <circle cx="${c}" cy="${c}" r="${r}" fill="none" stroke="${colorPresent||'#0F9D8C'}" stroke-width="${stroke}"
+      stroke-dasharray="${presentLen} ${circ-presentLen}" stroke-linecap="round" transform="rotate(-90 ${c} ${c})"/>
+  </svg>`;
+}
+
+/* ============================================================
+   DASHBOARD
+   ============================================================ */
+async function renderDashboard(){
+  return currentUser.isAdmin ? renderAdminDashboard() : renderEmployeeDashboard();
+}
+
+async function renderAdminDashboard(){
+  const d = await api("dashboard.admin");
+  const stats = [
+    { label:"Scheduled today", val: d.stats.scheduledToday, icon:cal_icon(), bg:"var(--teal-soft)", fg:"var(--teal)", delta:`${d.stats.presentToday} checked in so far`, cls:"up"},
+    { label:"Total monthly payroll", val: fmtMoney(d.stats.totalNet), icon:wallet_icon(), bg:"var(--amber-soft)", fg:"#B47A16", delta:"base + bonus − deduction ± attendance", cls:"" },
+    { label:"Attendance credits", val: fmtMoney(d.stats.totalCredits), icon:up_icon(), bg:"var(--teal-soft)", fg:"var(--teal)", delta:"+₹50 per shift attended", cls:"up" },
+    { label:"Attendance deductions", val: fmtMoney(d.stats.totalDeductions), icon:down_icon(), bg:"var(--coral-soft)", fg:"var(--coral)", delta:"−₹50 per missed shift", cls:"down" },
+  ];
+
+  const roster7Days = [];
+  for(let i=0;i<7;i++) roster7Days.push(addDays(parseDate(d.weekStart), i));
+  const rosterByEmpDate = {};
+  d.roster7.forEach(r=>{ rosterByEmpDate[r.emp_id+"|"+r.shift_date] = r.shift_type; });
+
+  return `
+  <div class="grid g-4">
+    ${stats.map(s=>`
+      <div class="card stat-card">
+        <div class="top"><div class="icon" style="background:${s.bg};color:${s.fg}">${s.icon}</div></div>
+        <div class="label">${s.label}</div>
+        <div class="val">${s.val}</div>
+        <div class="delta ${s.cls}">${s.delta}</div>
+      </div>`).join("")}
+  </div>
+
+  <div class="section-title">This week</div>
+  <div class="grid g-2">
+    <div class="card card-pad">
+      <div class="card-head"><h3>Team attendance ring</h3><span class="link" onclick="goPage('attendance')">View attendance →</span></div>
+      <div style="display:flex;flex-wrap:wrap;gap:22px;">
+        ${d.employees.map(e=>`
+          <div style="display:flex;flex-direction:column;align-items:center;gap:6px;">
+            <div class="ring-wrap">
+              ${ringSVG(e.present,e.absent,68,8,e.color,'#EEF0F5')}
+              <div class="center"><div class="n" style="font-size:13px;">${e.present}</div></div>
+            </div>
+            <div style="font-size:11px;color:var(--muted);max-width:70px;text-align:center;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">${e.name.split(" ")[0]}</div>
+          </div>`).join("")}
+      </div>
+    </div>
+
+    <div class="card card-pad">
+      <div class="card-head"><h3>Payroll snapshot</h3><span class="link" onclick="goPage('payroll')">Open payroll →</span></div>
+      <table>
+        <thead><tr><th>Employee</th><th>Base</th><th>Adj.</th><th>Net</th></tr></thead>
+        <tbody>
+        ${d.employees.slice(0,6).map(e=>`
+          <tr>
+            <td><div class="emp-cell"><div class="avatar" style="width:28px;height:28px;font-size:11px;background:${e.color}">${initials(e.name)}</div><div class="name">${e.name}</div></div></td>
+            <td class="mono">${fmtMoney(e.base)}</td>
+            <td class="mono" style="color:${e.adj>=0?'var(--teal)':'var(--coral)'}">${e.adj>=0?'+':''}${fmtMoney(e.adj)}</td>
+            <td class="mono" style="font-weight:700;">${fmtMoney(e.net)}</td>
+          </tr>`).join("")}
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="section-title">Roster this week</div>
+  <div class="card card-pad">
+    <div style="overflow-x:auto;">
+    <table style="min-width:640px;">
+      <thead><tr><th>Employee</th>${roster7Days.map(dd=>`<th>${dayLabel(dd)} ${dd.getDate()}</th>`).join("")}</tr></thead>
+      <tbody>
+      ${d.employees.map(e=>`
+        <tr>
+          <td><div class="emp-cell"><div class="avatar" style="width:26px;height:26px;font-size:10.5px;background:${e.color}">${initials(e.name)}</div><div class="name">${e.name.split(" ")[0]}</div></div></td>
+          ${roster7Days.map(dd=>{
+            const ds = fmtDate(dd);
+            const type = rosterByEmpDate[e.id+"|"+ds];
+            if(!type) return `<td style="color:#C7CCDA;font-size:12px;">Off</td>`;
+            return `<td><span class="shift-chip ${type}">${SHIFT_TYPES[type].label}</span></td>`;
+          }).join("")}
+        </tr>`).join("")}
+      </tbody>
+    </table>
+    </div>
+  </div>
+  `;
+}
+
+async function renderEmployeeDashboard(){
+  const e = currentUser;
+  const d = await api("dashboard.employee");
+
+  return `
+  <div class="grid g-3">
+    <div class="card stat-card">
+      <div class="top"><div class="icon" style="background:var(--teal-soft);color:var(--teal)">${cal_icon()}</div></div>
+      <div class="label">Today's shift</div>
+      <div class="val" style="font-size:18px;">${d.todayShift ? d.todayShift.label+" · "+d.todayShift.time : "Off today"}</div>
+      <div class="delta up">${dateLabel(new Date())}</div>
+    </div>
+    <div class="card stat-card">
+      <div class="top"><div class="icon" style="background:var(--amber-soft);color:#B47A16">${wallet_icon()}</div></div>
+      <div class="label">Estimated net pay (this cycle)</div>
+      <div class="val">${fmtMoney(d.netPay)}</div>
+      <div class="delta ${d.adjustment>=0?'up':'down'}">${d.adjustment>=0?'+':''}${fmtMoney(d.adjustment)} attendance adjustment</div>
+    </div>
+    <div class="card stat-card">
+      <div class="top"><div class="icon" style="background:var(--coral-soft);color:var(--coral)">${bell_icon()}</div></div>
+      <div class="label">Notifications</div>
+      <div class="val">${d.notifCount}</div>
+      <div class="delta">unread updates</div>
+    </div>
+  </div>
+
+  <div class="grid g-2" style="margin-top:18px;">
+    <div class="card card-pad">
+      <div class="card-head"><h3>Attendance record</h3><span class="link" onclick="goPage('attendance')">Check in / out →</span></div>
+      <div style="display:flex;align-items:center;gap:22px;">
+        <div class="ring-wrap">
+          ${ringSVG(d.present,d.absent,110,12,e.color)}
+          <div class="center"><div class="n">${d.present}/${d.present+d.absent}</div><div class="l">shifts kept</div></div>
+        </div>
+        <div style="flex:1;">
+          <div class="legend" style="flex-direction:column;align-items:flex-start;gap:8px;">
+            <div><span class="sw" style="background:${e.color}"></span>Present — ${d.present} shifts <span class="mono" style="color:var(--teal)">+${fmtMoney(d.present*50)}</span></div>
+            <div><span class="sw" style="background:#EEF0F5"></span>Missed — ${d.absent} shifts <span class="mono" style="color:var(--coral)">-${fmtMoney(d.absent*50)}</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-pad">
+      <div class="card-head"><h3>Upcoming shifts</h3><span class="link" onclick="goPage('roster')">Full roster →</span></div>
+      ${d.upcoming.map(u=>{
+        const dd = parseDate(u.date);
+        return `
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:9px 0;border-bottom:1px solid var(--border);">
+          <div>
+            <div style="font-size:13.5px;font-weight:600;">${dayLabel(dd)}, ${dateLabel(dd)}</div>
+          </div>
+          ${u.shift ? `<span class="shift-chip ${u.shift.type}">${u.shift.label} · ${u.shift.time}</span>` : `<span class="pill gray">Off</span>`}
+        </div>`;
+      }).join("")}
+    </div>
+  </div>
+
+  <div class="section-title">Recent notifications</div>
+  <div class="card card-pad">
+    ${d.recentNotifications.length ? d.recentNotifications.map(n=>`
+      <div style="display:flex;gap:12px;padding:10px 0;border-bottom:1px solid var(--border);">
+        <div class="pill ${n.kind==='pos'?'green':'red'}">${n.kind==='pos'?'+':'−'}₹50</div>
+        <div><div style="font-size:13.5px;font-weight:600;">${n.title}</div><div style="font-size:12.5px;color:var(--muted);">${n.body}</div></div>
+      </div>`).join("") : `<div class="empty-state">No notifications yet.</div>`}
+  </div>
+  `;
+}
+
+/* icons */
+function cal_icon(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M3 9h18M8 2v4M16 2v4"/></svg>`}
+function wallet_icon(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="13" rx="2"/><circle cx="12" cy="12.5" r="3"/></svg>`}
+function up_icon(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 6l-9.5 9.5-5-5L1 18"/><path d="M17 6h6v6"/></svg>`}
+function down_icon(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 18l-9.5-9.5-5 5L1 6"/><path d="M17 18h6v-6"/></svg>`}
+function bell_icon(){return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>`}
+
+/* ============================================================
+   ROSTER PLANNING
+   ============================================================ */
+async function renderRoster(){
+  const days = [];
+  for(let i=0;i<7;i++) days.push(addDays(parseDate(rosterWeekStart),i));
+  const admin = currentUser.isAdmin;
+
+  const [{ employees }, rosterResp] = await Promise.all([
+    api("employees.list"),
+    api("roster.get", { params: { weekStart: rosterWeekStart } }),
+  ]);
+  const list = admin ? employees : employees.filter(e=>e.id===currentUser.id);
+  const rosterByEmpDate = {};
+  rosterResp.roster.forEach(r=>{ rosterByEmpDate[r.emp_id+"|"+r.shift_date] = r.shift_type; });
+
+  return `
+  <div class="card card-pad" style="margin-bottom:16px;">
+    <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <button class="btn btn-ghost" onclick="shiftWeek(-1)">← Prev</button>
+        <div style="font-weight:700;font-family:'Space Grotesk';font-size:15px;">${dateLabel(days[0])} – ${dateLabel(days[6])}, ${days[0].getFullYear()}</div>
+        <button class="btn btn-ghost" onclick="shiftWeek(1)">Next →</button>
+      </div>
+      <div class="legend">
+        <span><span class="sw" style="background:var(--teal)"></span>Morning</span>
+        <span><span class="sw" style="background:var(--amber)"></span>Evening</span>
+        <span><span class="sw" style="background:#4A4FA0"></span>Night</span>
+        ${admin ? `<span style="color:var(--muted);font-size:12px;">· Click a cell to assign / edit a shift</span>` : ``}
+      </div>
+    </div>
+  </div>
+
+  <div class="card" style="overflow-x:auto;">
+    <div class="roster-grid" style="min-width:${170+7*110}px;">
+      <div class="rhead">Employee</div>
+      ${days.map(d=>`<div class="rhead">${dayLabel(d)}<div class="d">${dateLabel(d)}</div></div>`).join("")}
+      ${list.map(e=>`
+        <div class="rname"><div class="avatar" style="width:26px;height:26px;font-size:10px;background:${e.color}">${initials(e.name)}</div>${e.name.split(" ")[0]}</div>
+        ${days.map(d=>{
+          const ds = fmtDate(d);
+          const type = rosterByEmpDate[e.id+"|"+ds];
+          const clickable = admin;
+          const attr = clickable ? `onclick="openShiftModal('${ds}','${e.id}')"` : "";
+          if(!type) return `<div class="rcell off" ${attr}>${clickable?'+ Add':'Off'}</div>`;
+          const t = SHIFT_TYPES[type];
+          return `<div class="rcell" ${attr}><div class="shift-chip ${type}">${t.label}<div class="t">${t.time}</div></div></div>`;
+        }).join("")}
+      `).join("")}
+    </div>
+  </div>
+  `;
+}
+function shiftWeek(n){
+  rosterWeekStart = fmtDate(addDays(parseDate(rosterWeekStart), n*7));
+  render();
+}
+
+async function openShiftModal(dateStr, empId){
+  const { employees } = await api("employees.list");
+  const emp = employees.find(e=>e.id===empId);
+  const { roster } = await api("roster.get", { params: { weekStart: rosterWeekStart } });
+  const existing = roster.find(r=>r.emp_id===empId && r.shift_date===dateStr);
+  const overlay = document.getElementById('overlay');
+  overlay.innerHTML = `
+    <div class="modal">
+      <h3>Assign shift</h3>
+      <div class="sub">${emp.name} · ${new Date(dateStr).toLocaleDateString('en-US',{weekday:'long', month:'short', day:'numeric'})}</div>
+      <div class="field">
+        <label>Shift type</label>
+        <select id="shift-type-select">
+          <option value="">Off / No shift</option>
+          ${Object.entries(SHIFT_TYPES).map(([k,v])=>`<option value="${k}" ${existing&&existing.shift_type===k?'selected':''}>${v.label} (${v.time})</option>`).join("")}
+        </select>
+      </div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="closeOverlay()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveShift('${dateStr}','${empId}')">Save shift</button>
+      </div>
+    </div>`;
+  overlay.classList.add('open');
+}
+async function saveShift(dateStr, empId){
+  const val = document.getElementById('shift-type-select').value;
+  try {
+    await api("roster.setShift", { method:"POST", body:{ date:dateStr, empId, type: val||null } });
+    closeOverlay();
+    document.getElementById('content').innerHTML = await renderRoster();
+    toast("Roster updated", "pos");
+  } catch (err) {
+    toast("Couldn't update roster: " + err.message, "neg");
+  }
+}
+function closeOverlay(){ document.getElementById('overlay').classList.remove('open'); document.getElementById('overlay').innerHTML=''; }
+
+/* ============================================================
+   ATTENDANCE
+   ============================================================ */
+let mediaStream = null;
+async function renderAttendance(){
+  return currentUser.isAdmin ? renderAdminAttendance() : renderEmployeeAttendance();
+}
+
+async function renderEmployeeAttendance(){
+  const d = await api("attendance.today");
+  const today = d.today;
+
+  return `
+  <div class="card card-pad checkin-card">
+    <div class="face-box" id="face-box">
+      <div class="placeholder" id="face-placeholder">Camera preview appears here for face check-in</div>
+      <div class="face-badge" id="face-badge">Face verified ✓</div>
+    </div>
+    <div style="flex:1;min-width:220px;">
+      <h3 style="font-size:16px;">${d.shift ? `Today's shift: ${d.shift.label} (${d.shift.time})` : "No shift scheduled today"}</h3>
+      <div style="font-size:12.5px;color:var(--muted);margin-top:4px;">Verification uses GPS geofencing (office radius ${d.office.radius}m) and a simulated face match.</div>
+      <div class="geo-row" id="geo-row">
+        <span class="g-pill">📍 Location: not checked</span>
+      </div>
+      <div style="display:flex;gap:10px;margin-top:16px;flex-wrap:wrap;">
+        <button class="btn btn-teal" onclick="startCheckIn()" ${today&&today.checkin?'disabled':''}>${today&&today.checkin?'Checked in ✓':'Check in'}</button>
+        <button class="btn btn-coral" onclick="startCheckOut()" ${!today||!today.checkin||today.checkout?'disabled':''}>${today&&today.checkout?'Checked out ✓':'Check out'}</button>
+      </div>
+      ${!d.shift ? `<div style="margin-top:10px;font-size:12px;color:var(--coral);">You have no shift scheduled today — check-in is for reference only.</div>` : ``}
+    </div>
+  </div>
+
+  <div class="section-title">Recent attendance</div>
+  <div class="card card-pad">
+    <div class="timeline">
+      ${d.history.length ? d.history.map(h=>`
+        <div class="tl-item ${h.status}">
+          <div class="tt">${new Date(h.att_date).toLocaleDateString('en-US',{weekday:'long', month:'short', day:'numeric'})} · <span class="pill ${h.status==='present'?'green':'red'}">${h.status==='present'?'Present':'Absent'}</span></div>
+          <div class="td2">${h.status==='present' ? `In ${h.checkin||'—'} · Out ${h.checkout||'—'} · GPS ${h.gps_ok==1?'verified':'flagged'} · Face ${h.face_ok==1?'verified':'—'}` : 'No check-in recorded for the scheduled shift'}</div>
+        </div>`).join("") : `<div class="empty-state">No attendance history yet.</div>`}
+    </div>
+  </div>
+  `;
+}
+
+async function renderAdminAttendance(){
+  const [{ rows }, { log }] = await Promise.all([
+    api("attendance.today"),
+    api("attendance.log"),
+  ]);
+
+  return `
+  <div class="card card-pad" style="margin-bottom:16px;">
+    <div class="card-head"><h3>Today · ${dateLabel(new Date())}</h3>
+      <button class="btn btn-primary" onclick="runPayrollSync()">Run attendance payroll sync</button>
+    </div>
+    <div style="font-size:12.5px;color:var(--muted);margin-bottom:10px;">Applies +₹50 for each attended shift and −₹50 for each missed shift, based on roster vs. check-in records.</div>
+    <table>
+      <thead><tr><th>Employee</th><th>Scheduled</th><th>Check-in</th><th>Check-out</th><th>GPS</th><th>Face</th><th>Status</th></tr></thead>
+      <tbody>
+      ${rows.map(r=>`
+        <tr>
+          <td><div class="emp-cell"><div class="avatar" style="width:28px;height:28px;font-size:11px;background:${r.color}">${initials(r.name)}</div><div><div class="name">${r.name}</div><div class="role">${r.role}</div></div></div></td>
+          <td>${r.shift_type ? SHIFT_TYPES[r.shift_type].label+" · "+SHIFT_TYPES[r.shift_type].time : '<span class="pill gray">Off</span>'}</td>
+          <td class="mono">${r.checkin || '—'}</td>
+          <td class="mono">${r.checkout || '—'}</td>
+          <td>${r.gps_ok==1 ? '<span class="pill green">Verified</span>' : (r.shift_type?'<span class="pill amber">Pending</span>':'—')}</td>
+          <td>${r.face_ok==1 ? '<span class="pill green">Matched</span>' : (r.shift_type?'<span class="pill amber">Pending</span>':'—')}</td>
+          <td>${r.status ? (r.status==='present'?'<span class="pill green">Present</span>':'<span class="pill red">Absent</span>') : (r.shift_type?'<span class="pill amber">Awaiting</span>':'<span class="pill gray">—</span>')}</td>
+        </tr>`).join("")}
+      </tbody>
+    </table>
+  </div>
+
+  <div class="section-title">Full attendance log</div>
+  <div class="card card-pad" style="max-height:420px;overflow:auto;">
+    <table>
+      <thead><tr><th>Date</th><th>Employee</th><th>Status</th><th>In</th><th>Out</th></tr></thead>
+      <tbody>
+      ${log.map(a=>`
+        <tr>
+          <td class="mono" style="font-size:12px;">${a.att_date}</td>
+          <td>${a.name}</td>
+          <td>${a.status==='present'?'<span class="pill green">Present</span>':'<span class="pill red">Absent</span>'}</td>
+          <td class="mono">${a.checkin||'—'}</td>
+          <td class="mono">${a.checkout||'—'}</td>
+        </tr>`).join("")}
+      </tbody>
+    </table>
+  </div>
+  `;
+}
+
+function startFaceCapture(cb){
+  const box = document.getElementById('face-box');
+  const placeholder = document.getElementById('face-placeholder');
+  if(!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia){
+    placeholder.textContent = "Camera unavailable in this browser — simulating face match.";
+    setTimeout(()=>cb(true), 900);
+    return;
+  }
+  navigator.mediaDevices.getUserMedia({ video:true })
+    .then(stream=>{
+      mediaStream = stream;
+      const video = document.createElement('video');
+      video.autoplay = true; video.muted = true; video.playsInline = true;
+      video.srcObject = stream;
+      box.insertBefore(video, document.getElementById('face-badge'));
+      placeholder.style.display='none';
+      setTimeout(()=>{
+        document.getElementById('face-badge').classList.add('show');
+        document.getElementById('face-badge').textContent = "Verifying face…";
+        setTimeout(()=>{
+          document.getElementById('face-badge').textContent = "Face verified ✓";
+          stream.getTracks().forEach(t=>t.stop());
+          cb(true);
+        }, 1300);
+      }, 700);
+    })
+    .catch(()=>{
+      placeholder.textContent = "Camera permission denied — simulating face match instead.";
+      setTimeout(()=>cb(true), 900);
+    });
+}
+
+function startCheckIn(){
+  const geoRow = document.getElementById('geo-row');
+  geoRow.innerHTML = `<span class="g-pill">📍 Locating…</span>`;
+  const finishWith = (lat, lng, coordsText)=>{
+    startFaceCapture(async (faceOk)=>{
+      try {
+        const resp = await api("attendance.checkin", { method:"POST", body:{ lat, lng, faceOk } });
+        geoRow.innerHTML = `<span class="g-pill">📍 ${coordsText}</span> <span class="g-pill">${resp.gpsOk?'✓ Within office geofence':'⚠ Outside geofence — flagged'}</span>`;
+        toast(`Checked in`, "pos");
+        document.getElementById('content').innerHTML = await renderAttendance();
+      } catch (err) {
+        toast("Check-in failed: " + err.message, "neg");
+      }
+    });
+  };
+  if(navigator.geolocation){
+    navigator.geolocation.getCurrentPosition(pos=>{
+      finishWith(pos.coords.latitude, pos.coords.longitude, `${pos.coords.latitude.toFixed(3)}, ${pos.coords.longitude.toFixed(3)}`);
+    }, ()=>{ finishWith(null, null, "Location permission denied"); }, {timeout:6000});
+  } else {
+    finishWith(null, null, "Geolocation unavailable");
+  }
+}
+async function startCheckOut(){
+  try {
+    await api("attendance.checkout", { method:"POST" });
+    toast(`Checked out`, "pos");
+    document.getElementById('content').innerHTML = await renderAttendance();
+  } catch (err) {
+    toast("Check-out failed: " + err.message, "neg");
+  }
+}
+
+async function runPayrollSync(){
+  try {
+    await api("attendance.sync", { method:"POST" });
+    toast("Payroll sync complete — ledger updated across all employees", "pos");
+    document.getElementById('content').innerHTML = await renderAdminAttendance();
+  } catch (err) {
+    toast("Sync failed: " + err.message, "neg");
+  }
+}
+
+/* ============================================================
+   PAYROLL
+   ============================================================ */
+async function renderPayroll(){
+  return currentUser.isAdmin ? renderAdminPayroll() : renderEmployeePayroll();
+}
+let lastPayrollSheet = [];
+async function renderAdminPayroll(){
+  const { sheet, ledger } = await api("payroll.get");
+  lastPayrollSheet = sheet;
+  const totalNet = sheet.reduce((s,e)=>s+e.netPay,0);
+  return `
+  <div class="grid g-4" style="margin-bottom:18px;">
+    <div class="card stat-card"><div class="label">Employees</div><div class="val">${sheet.length}</div></div>
+    <div class="card stat-card"><div class="label">Total base salary</div><div class="val">${fmtMoney(sheet.reduce((s,e)=>s+e.base,0))}</div></div>
+    <div class="card stat-card"><div class="label">Total bonuses</div><div class="val" style="color:var(--teal)">${fmtMoney(sheet.reduce((s,e)=>s+e.bonus,0))}</div></div>
+    <div class="card stat-card"><div class="label">Net payroll</div><div class="val">${fmtMoney(totalNet)}</div></div>
+  </div>
+  <div class="card card-pad">
+    <div class="card-head"><h3>Salary sheet</h3><span style="font-size:12px;color:var(--muted);">Attendance adj. = (shifts attended × ₹50) − (shifts missed × ₹50)</span></div>
+    <div style="overflow-x:auto;">
+    <table>
+      <thead><tr><th>Employee</th><th>Base</th><th>Bonus</th><th>Deduction</th><th>Attendance adj.</th><th>Net pay</th><th></th></tr></thead>
+      <tbody>
+      ${sheet.map(e=>`
+        <tr>
+          <td><div class="emp-cell"><div class="avatar" style="width:28px;height:28px;font-size:11px;background:${e.color}">${initials(e.name)}</div><div><div class="name">${e.name}</div><div class="role">${e.dept}</div></div></div></td>
+          <td class="mono">${fmtMoney(e.base)}</td>
+          <td class="mono" style="color:var(--teal)">${fmtMoney(e.bonus)}</td>
+          <td class="mono" style="color:var(--coral)">-${fmtMoney(e.deduction)}</td>
+          <td class="mono" style="color:${e.attendanceAdjustment>=0?'var(--teal)':'var(--coral)'}">${e.attendanceAdjustment>=0?'+':''}${fmtMoney(e.attendanceAdjustment)}</td>
+          <td class="mono" style="font-weight:700;">${fmtMoney(e.netPay)}</td>
+          <td><button class="btn btn-ghost" style="padding:6px 12px;font-size:12px;" onclick="openPayrollEdit('${e.id}')">Edit</button></td>
+        </tr>`).join("")}
+      </tbody>
+    </table>
+    </div>
+  </div>
+
+  <div class="section-title">Attendance ledger (latest 20)</div>
+  <div class="card card-pad">
+    <table>
+      <thead><tr><th>Date</th><th>Employee</th><th>Reason</th><th>Amount</th></tr></thead>
+      <tbody>
+      ${ledger.map(l=>`
+        <tr>
+          <td class="mono" style="font-size:12px;">${l.ledger_date}</td>
+          <td>${l.name || l.emp_id}</td>
+          <td style="color:var(--muted);font-size:12.5px;">${l.reason}</td>
+          <td class="mono" style="color:${l.amount>=0?'var(--teal)':'var(--coral)'};font-weight:600;">${l.amount>=0?'+':''}${fmtMoney(Number(l.amount))}</td>
+        </tr>`).join("")}
+      </tbody>
+    </table>
+  </div>
+  `;
+}
+function openPayrollEdit(empId){
+  const e = lastPayrollSheet.find(x=>x.id===empId);
+  const overlay = document.getElementById('overlay');
+  overlay.innerHTML = `
+    <div class="modal">
+      <h3>Edit pay components</h3>
+      <div class="sub">${e.name} · ${e.role}</div>
+      <div class="field"><label>Base salary (₹/mo)</label><input type="number" id="edit-base" value="${e.base}"></div>
+      <div class="field"><label>Bonus (₹)</label><input type="number" id="edit-bonus" value="${e.bonus}"></div>
+      <div class="field"><label>Other deduction (₹)</label><input type="number" id="edit-deduction" value="${e.deduction}"></div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="closeOverlay()">Cancel</button>
+        <button class="btn btn-primary" onclick="savePayrollEdit('${empId}')">Save</button>
+      </div>
+    </div>`;
+  overlay.classList.add('open');
+}
+async function savePayrollEdit(empId){
+  try {
+    await api("payroll.update", { method:"POST", body:{
+      empId,
+      base: Number(document.getElementById('edit-base').value)||0,
+      bonus: Number(document.getElementById('edit-bonus').value)||0,
+      deduction: Number(document.getElementById('edit-deduction').value)||0,
+    }});
+    closeOverlay();
+    document.getElementById('content').innerHTML = await renderAdminPayroll();
+    toast("Pay components updated", "pos");
+  } catch (err) {
+    toast("Couldn't save: " + err.message, "neg");
+  }
+}
+async function renderEmployeePayroll(){
+  const e = currentUser;
+  const { employee, ledger } = await api("payroll.get");
+  return `
+  <div class="grid g-2" style="margin-bottom:18px;">
+    <div class="card card-pad">
+      <div class="card-head"><h3>Salary breakdown</h3></div>
+      <table>
+        <tbody>
+          <tr><td>Base salary</td><td class="mono" style="text-align:right;">${fmtMoney(employee.base)}</td></tr>
+          <tr><td>Bonus</td><td class="mono" style="text-align:right;color:var(--teal);">+${fmtMoney(employee.bonus)}</td></tr>
+          <tr><td>Deductions</td><td class="mono" style="text-align:right;color:var(--coral);">-${fmtMoney(employee.deduction)}</td></tr>
+          <tr><td>Attendance adjustment</td><td class="mono" style="text-align:right;color:${employee.attendanceAdjustment>=0?'var(--teal)':'var(--coral)'};">${employee.attendanceAdjustment>=0?'+':''}${fmtMoney(employee.attendanceAdjustment)}</td></tr>
+          <tr><td style="font-weight:700;">Net pay</td><td class="mono" style="text-align:right;font-weight:700;font-size:16px;">${fmtMoney(employee.netPay)}</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="card card-pad">
+      <div class="card-head"><h3>How attendance affects pay</h3></div>
+      <div style="font-size:13px;color:var(--muted);line-height:1.7;">
+        Every scheduled shift you attend and check in for adds <b style="color:var(--teal)">+₹50</b> to your pay.<br>
+        Every scheduled shift you miss deducts <b style="color:var(--coral)">−₹50</b>.<br>
+        This cycle: <b>${ledger.filter(l=>l.amount>0).length}</b> shifts attended, <b>${ledger.filter(l=>l.amount<0).length}</b> missed.
+      </div>
+    </div>
+  </div>
+  <div class="section-title">My attendance ledger</div>
+  <div class="card card-pad">
+    <table>
+      <thead><tr><th>Date</th><th>Reason</th><th>Amount</th></tr></thead>
+      <tbody>
+      ${ledger.length ? ledger.map(l=>`
+        <tr>
+          <td class="mono" style="font-size:12px;">${l.ledger_date}</td>
+          <td style="color:var(--muted);font-size:12.5px;">${l.reason}</td>
+          <td class="mono" style="color:${l.amount>=0?'var(--teal)':'var(--coral)'};font-weight:600;">${l.amount>=0?'+':''}${fmtMoney(Number(l.amount))}</td>
+        </tr>`).join("") : `<tr><td colspan="3"><div class="empty-state">No ledger entries yet.</div></td></tr>`}
+      </tbody>
+    </table>
+  </div>
+  `;
+}
+
+/* ============================================================
+   EMPLOYEES (admin)
+   ============================================================ */
+async function renderEmployees(){
+  if(!currentUser.isAdmin) return `<div class="empty-state">This page is only available to admins.</div>`;
+  const { employees } = await api("employees.list");
+  return `
+  <div class="card card-pad" style="margin-bottom:16px;">
+    <div class="card-head"><h3>Team directory</h3><button class="btn btn-primary" onclick="openAddEmployee()">+ Add employee</button></div>
+    <div class="grid g-3">
+      ${employees.map(e=>`
+        <div class="card card-pad" style="box-shadow:none;border:1px solid var(--border);">
+          <div style="display:flex;align-items:center;gap:12px;">
+            <div class="avatar" style="width:44px;height:44px;font-size:15px;background:${e.color}">${initials(e.name)}</div>
+            <div>
+              <div style="font-weight:700;font-size:14.5px;">${e.name}</div>
+              <div style="font-size:12.5px;color:var(--muted);">${e.role}</div>
+            </div>
+          </div>
+          <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+            <span class="pill gray">${e.dept}</span>
+            <span class="pill gray">${e.id}</span>
+          </div>
+          <div style="margin-top:12px;font-size:12.5px;color:var(--muted);">Net pay: <span class="mono" style="color:var(--text);font-weight:600;">${fmtMoney(e.netPay)}</span></div>
+        </div>`).join("")}
+    </div>
+  </div>
+  `;
+}
+function openAddEmployee(){
+  const overlay = document.getElementById('overlay');
+  overlay.innerHTML = `
+    <div class="modal">
+      <h3>Add employee</h3>
+      <div class="sub">Creates a new team member with a starter salary.</div>
+      <div class="field"><label>Full name</label><input id="add-name" placeholder="e.g. Divya Rao"></div>
+      <div class="field"><label>Role / title</label><input id="add-role" placeholder="e.g. Operations Associate"></div>
+      <div class="field"><label>Department</label><input id="add-dept" placeholder="e.g. Operations"></div>
+      <div class="field"><label>Base salary (₹/mo)</label><input id="add-base" type="number" value="30000"></div>
+      <div class="modal-actions">
+        <button class="btn btn-ghost" onclick="closeOverlay()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveNewEmployee()">Add employee</button>
+      </div>
+    </div>`;
+  overlay.classList.add('open');
+}
+async function saveNewEmployee(){
+  const name = document.getElementById('add-name').value.trim();
+  if(!name){ toast("Please enter a name","neg"); return; }
+  try {
+    await api("employees.add", { method:"POST", body:{
+      name,
+      role: document.getElementById('add-role').value.trim(),
+      dept: document.getElementById('add-dept').value.trim(),
+      base: Number(document.getElementById('add-base').value)||30000,
+    }});
+    closeOverlay();
+    document.getElementById('content').innerHTML = await renderEmployees();
+    toast(`${name} added to the team`, "pos");
+  } catch (err) {
+    toast("Couldn't add employee: " + err.message, "neg");
+  }
+}
+
+// small login-screen ring decoration
+document.getElementById('login-rings').innerHTML = [
+  {n:"22", l:"Present", c:"#0F9D8C"},
+  {n:"03", l:"Missed", c:"#E8604C"},
+  {n:"₹50", l:"Per shift", c:"#EFA93A"},
+].map(r=>`<div class="ring-mini"><div style="font-family:'JetBrains Mono';font-weight:700;font-size:22px;color:${r.c};">${r.n}</div><span>${r.l}</span></div>`).join("");
+</script>
+</body>
+</html>
